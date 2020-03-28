@@ -10,21 +10,21 @@ SECRET_KEY = 'LAHACKS2020'
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-
 @app.route("/sms", methods=['GET', 'POST'])
 def parser():
 
     # Get status from cookie
-    current_status = session.get('status', '/')
+    current_status = session.get('clsrm_status', '/')
+    # TODO: move away from using one cookie and use more cookies
+    
+
+    current_class = session.get('clsrm_class', '')
+    current_type = session.get('clsrm_type', '')
+    current_id = session.get('clsrm_sel_id', '')
+    given_opens = session.get('clsrm_options','')
 
     # TODO: Keep track of what IDs the options I give correspond to
 
-
-    # status syntax:
-    # /ccccc/aaaaa/<state>
-    # ccccc = class id
-    # aaaaa = post or assignment
-    # <state
 
     # Set up output vars
     out_status_text = ''
@@ -37,12 +37,11 @@ def parser():
 
     from_number = request.form['From']
     from_text = request.form['Body']
+    from_n_media = request.from['NumMedia']
 
-
-    path = current_status.split('/')
-
-    if 0:
-        print("false")
+    if from_n_media:
+        print("got media")
+        # get media ID and get media object, if we are expecting media
     elif from_text.isdigit():
         new_status = current_status + from_text + '/'
         out_status_text += 'Up one level'
@@ -57,7 +56,7 @@ def parser():
     else:
         new_status=current_status
 
-    session['status']=new_status
+    session['clsrm_status']=new_status
     
     out_options_text="\n".join(option for option in out_options)
     
