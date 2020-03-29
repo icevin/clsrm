@@ -43,9 +43,15 @@ class ClsrmDriver:
 
     def getCourses(self):
         return self.service.courses().list().execute()['courses']
+    
+    def getCourseInfo(self, courseId):
+        return self.service.courses().get(id=courseId).execute()
 
-    def getCourseWork(self, courseId):
+    def listCourseWork(self, courseId):
         return self.service.courses().courseWork().list(courseId=courseId).execute()['courseWork']
+
+    def getCourseWork(self, courseId, id):
+        return self.service.courses().courseWork().get(courseId=courseId, id=id).execute()
     
     def createCoursework(self, courseId, courseWork):
         # courseWork format: https://developers.google.com/classroom/reference/rest/v1/courses.courseWork
@@ -74,24 +80,26 @@ if __name__ == '__main__':
     clsrm = ClsrmDriver()
 
     # sample addAttachments
-    courseId = clsrm.getCourses()[0]["id"]
-    courseWorkId = [cw for cw in clsrm.getCourseWork(courseId) if cw['title'] == "Test Assignment 2"][0]["id"]
-    submissionId = clsrm.getStudentSubmissions(courseId, courseWorkId)[0]["id"]
-    attachments = [{
-        "link": {
-            "url": "https://www.google.com/",
-        }
-    }]
-    clsrm.addAttachments(courseId, courseWorkId, submissionId, attachments)
+    
+    courseId = clsrm.getCourses()[1]["id"]
+    
+    # courseWorkId = [cw for cw in clsrm.getCourseWork(courseId) if cw['title'] == "Test Assignment 2"][0]["id"]
+    # submissionId = clsrm.getStudentSubmissions(courseId, courseWorkId)[0]["id"]
+    # attachments = [{
+    #     "link": {
+    #         "url": "https://www.google.com/",
+    #     }
+    # }]
+    # clsrm.addAttachments(courseId, courseWorkId, submissionId, attachments)
     
     # for looking at structure of what is returned
     with open("out.json", "w") as f:
-        f.write(json.dumps(clsrm.getCourseWork(courseId)))
+        f.write(json.dumps(clsrm.getCourseWork(courseId, '57186993887')))
 
     # sample createCoursework
-    courseWork = {
-        "title": "Test Assignment 3",
-        "workType": "ASSIGNMENT",
-        "state": "PUBLISHED"
-    }
-    clsrm.createCoursework(courseId, courseWork)
+    # courseWork = {
+    #     "title": "Test Assignment 3",
+    #     "workType": "ASSIGNMENT",
+    #     "state": "PUBLISHED"
+    # }
+    # clsrm.createCoursework(courseId, courseWork)
