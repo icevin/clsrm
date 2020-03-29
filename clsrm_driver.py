@@ -44,9 +44,15 @@ class ClsrmDriver:
 
     def getCourses(self):
         return self.service.courses().list().execute()['courses']
+    
+    def getCourseInfo(self, courseId):
+        return self.service.courses().get(id=courseId).execute()
 
-    def getCourseWork(self, courseId):
+    def listCourseWork(self, courseId):
         return self.service.courses().courseWork().list(courseId=courseId).execute()['courseWork']
+
+    def getCourseWork(self, courseId, id):
+        return self.service.courses().courseWork().get(courseId=courseId, id=id).execute()
     
     def createCoursework(self, courseId, courseWork):
         # courseWork format: https://developers.google.com/classroom/reference/rest/v1/courses.courseWork
@@ -78,17 +84,27 @@ if __name__ == '__main__':
     url = "https://api.twilio.com/2010-04-01/Accounts/AC2080a2bffe112c85f50b775ea2ec07c5/Messages/MM5f29d20fda765b3ff18c1fb6b761013c/Media/ME60a64794fca78fd9788bc2d5c836c79c"
 
     # sample addAttachments
-    courseId = [c for c in clsrm.getCourses() if c['name'] == "LA Hacks 2020"][0]["id"]
-    courseWorkId = [cw for cw in clsrm.getCourseWork(courseId) if cw['title'] == "Test Assignment 2"][0]["id"]
-    submissionId = clsrm.getStudentSubmissions(courseId, courseWorkId)[1]["id"]
-    attachments = [{
-        "driveFile": {
-            "id": drive.uploadFromURL("image", url, "image/jpeg")
-        }
-    },
-    {
-        "driveFile": {
-            "id": drive.uploadText("essay", "the brown fox jumped over the lazy dog", "text/plain")
-        }
-    }]
-    clsrm.addAttachments(courseId, courseWorkId, submissionId, attachments)
+    
+    courseId = clsrm.getCourses()[1]["id"]
+    
+    courseWorkId = [cw for cw in clsrm.listCourseWork(courseId) if cw['title'] == "Test Assignment 2"][0]["id"]
+    submissionId = clsrm.getStudentSubmissions(courseId, courseWorkId)[0]["id"]
+    # attachments = [{
+    #     "link": {
+    #         "url": "https://www.google.com/",
+    #     }
+    # }]
+    # clsrm.addAttachments(courseId, courseWorkId, submissionId, attachments)
+    
+    # for looking at structure of what is returned
+    with open("out.json", "w") as f:
+        f.write(json.dumps(clsrm.getStudentSubmissions(courseId, '57186993887')))
+        f.write(json.dumps(clsrm.getAttachments(courseId, courseWorkId, submissionId)))
+
+    # sample createCoursework
+    # courseWork = {
+    #     "title": "Test Assignment 3",
+    #     "workType": "ASSIGNMENT",
+    #     "state": "PUBLISHED"
+    # }
+    # clsrm.createCoursework(courseId, courseWork)
