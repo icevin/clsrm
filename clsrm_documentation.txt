@@ -1,0 +1,34 @@
+clsrm_status:
+Holds position in menu.
+    '/' - home
+
+clsrm_class:
+Holds classid.
+    '' - No class selected
+    'XXXXXXX' - classID
+
+clsrm_selection_type options:
+What are we choosing between looking at?
+    'an' - announcement
+    'cw' - coursework
+    'cl' - class
+    '' - nothing
+
+clsrm_sel_id options:
+Holds announcement/coursework classID
+
+clsrm_choice_type:
+Holds last given choice type - what we will do next
+    
+    'class' - Choose a class from a list
+    'class_options' - Choose options having selected a class
+    'class_list_an' - Choose announcement from list
+    'class_list_cw' - Choose classwork from list
+    'class_info'
+
+    'cw_options'
+        'cw_turnin'
+        'cw_list_attach'
+        'cw_add_attach"
+
+    'options' - Switch clsrm_type to value of selected
