@@ -94,7 +94,8 @@ if __name__ == '__main__':
     
     # for looking at structure of what is returned
     with open("out.json", "w") as f:
-        f.write(json.dumps(clsrm.getCourseWork(courseId, '57186993887')))
+        f.write(json.dumps(clsrm.getStudentSubmissions(courseId, '57186993887')))
+        f.write(json.dumps(clsrm.getAttachments(courseId, '57186993887', clsrm.getStudentSubmissions(courseId, '57186993887')[0]['id'])))
 
     # sample createCoursework
     # courseWork = {
