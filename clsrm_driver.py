@@ -83,8 +83,8 @@ if __name__ == '__main__':
     
     courseId = clsrm.getCourses()[1]["id"]
     
-    # courseWorkId = [cw for cw in clsrm.getCourseWork(courseId) if cw['title'] == "Test Assignment 2"][0]["id"]
-    # submissionId = clsrm.getStudentSubmissions(courseId, courseWorkId)[0]["id"]
+    courseWorkId = [cw for cw in clsrm.listCourseWork(courseId) if cw['title'] == "Test Assignment 2"][0]["id"]
+    submissionId = clsrm.getStudentSubmissions(courseId, courseWorkId)[0]["id"]
     # attachments = [{
     #     "link": {
     #         "url": "https://www.google.com/",
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     # for looking at structure of what is returned
     with open("out.json", "w") as f:
         f.write(json.dumps(clsrm.getStudentSubmissions(courseId, '57186993887')))
-        f.write(json.dumps(clsrm.getAttachments(courseId, '57186993887', clsrm.getStudentSubmissions(courseId, '57186993887')[0]['id'])))
+        f.write(json.dumps(clsrm.getAttachments(courseId, courseWorkId, submissionId)))
 
     # sample createCoursework
     # courseWork = {

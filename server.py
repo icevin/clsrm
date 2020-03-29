@@ -25,7 +25,7 @@ def parser():
 
     clsrm_choice_type = session.get('clsrm_choice_type', '')
     last_options = session.get('clsrm_options', '')
-
+    
     # Set up output vars
     out_status_text = ''
     out_content_text = ''
@@ -89,13 +89,13 @@ def parser():
 
                     out_options.append('1) List Announcements')
                     given_options['1'] = 'class_list_an'
-                    
+
                     out_options.append('2) List Coursework')
                     given_options['2'] = 'class_list_cw'
-                    
+
                     out_options.append('3) View Class Info')
                     given_options['3'] = 'class_info'
-                    
+
                     session['clsrm_options'] = json.dumps(given_options)
             if clsrm_choice_type == 'class_list_cw':
                 clsrm_sel_id = prev_options[from_text]
@@ -103,30 +103,39 @@ def parser():
                 course_work = clsrm.getCourseWork(current_class, clsrm_sel_id)
                 class_info = clsrm.getCourseInfo(current_class)
 
-                out_status_text = class_info['name'] + ': ' + course_work['title']
+                out_status_text = class_info['name'] + \
+                    ': ' + course_work['title']
                 if 'description' in course_work:
                     out_content_text += course_work['description'] + '\n'
 
                 # TODO: if you have a submission...
                 # if 'dueDate' in course_work:  todo: due date
 
-                submission = clsrm.getStudentSubmissions(current_class, clsrm_sel_id)[0]
+                submission = clsrm.getStudentSubmissions(
+                    current_class, clsrm_sel_id)[0]
 
                 state = submission['state']
 
                 counter = 0
 
                 out_options_explainer = 'Options:'
-                if 'attatchments' in submission:
+                if 'attachments' in submission['assignmentSubmission']:
                     out_options.append('1) View Attachments')
                     given_options['1'] = 'cw_list_attach'
                     counter += 1
+                    
+                print(json.dumps(submission))
 
                 if state == 'NEW' or state == 'CREATED' or state == 'RECLAIMED_BY_STUDENT':
                     out_options.append(str(counter + 1) + ') Add Attachments')
                     given_options[str(counter + 1)] = 'cw_add_attach'
                     out_options.append(str(counter + 2) + ') Turn in')
                     given_options[str(counter + 2)] = 'cw_turnin'
+                    counter += 2
+
+                out_options.append(str(counter + 1) + ') Back')
+                given_options[str(counter + 1)] = 'cw_back'
+
 
                 session['clsrm_options'] = json.dumps(given_options)
                 session['clsrm_choice_type'] = 'cw_options'
@@ -137,25 +146,79 @@ def parser():
                 clsrm_sel_id = session['clsrm_sel_id']
                 course_work = clsrm.getCourseWork(current_class, clsrm_sel_id)
                 class_info = clsrm.getCourseInfo(current_class)
-                submission = clsrm.getStudentSubmissions(current_class, clsrm_sel_id)[0]
+                submission = clsrm.getStudentSubmissions(
+                    current_class, clsrm_sel_id)[0]
                 if choice_text == 'cw_list_attach':
-                    print('list_attatch')
-                    attatchments = clsrm.getAttachments(current_class, clsrm_sel_id, submission['id'])
-                    out_options_explainer = 'Attatchments:'
-                    for num, work in enumerate(course_works, start=1):
-                        if work['state'] == 'PUBLISHED':
-                            option = str(num) + ') ' + work['title']
-                            out_options.append(option)
-                            given_options[str(num)] = work['id']
-                    session['clsrm_choice_type'] = 'class_list_cw'
+                    print('list_attach')
+                    attachments = clsrm.getAttachments(
+                        current_class, clsrm_sel_id, submission['id'])
+                    out_options_explainer = 'Attachments:'
+                    print(json.dumps(attachments))
+                    out_status_text = course_work['title'] + ' Attachments: '
+                    out_content_text = ''
+                    for num, attach in enumerate(attachments, start=1):
+                        if 'link' in attach:
+                            out_content_text += str(num) + '- Link: ' + \
+                                                    attach['link']['title'] + '\n'
+                            given_options[str(num)] = clsrm_sel_id
+                        if 'driveFile' in attach:
+                            out_content_text += str(num) + '- File: ' + attach['driveFile']['title'] + '\n'
+                    
+                    submission = clsrm.getStudentSubmissions(current_class, clsrm_sel_id)[0]
+
+                    state = submission['state']
+
+                    counter = 0
+
+                    out_options_explainer = 'Options:'
+                    if 'attachments' in submission['assignmentSubmission']:
+                        out_options.append('1) View Attachments')
+                        given_options['1'] = 'cw_list_attach'
+                        counter += 1
+
+                    if state == 'NEW' or state == 'CREATED' or state == 'RECLAIMED_BY_STUDENT':
+                        out_options.append(str(counter + 1) + ') Add Attachments')
+                        given_options[str(counter + 1)] = 'cw_add_attach'
+                        out_options.append(str(counter + 2) + ') Turn in')
+                        given_options[str(counter + 2)] = 'cw_turnin'
+                        counter += 2
+                        
+                    out_options.append(str(counter + 1) + ') Back')
+                    given_options[str(counter + 1)] = 'cw_back'
+
                     session['clsrm_options'] = json.dumps(given_options)
-                if choice_text == 'cw_add_attatch':
-                    print("add attach")
+                    session['clsrm_choice_type'] = 'cw_options'
+                    session['clsrm_sel_type'] = 'cw'
+                    session['clsrm_sel_id'] = clsrm_sel_id
+                if choice_text == 'cw_add_attach':
+                    out_options.append('1) List Announcements')
+                    given_options['1'] = 'class_list_statusan'
+                    out_options.append('2) List Coursework')
+                    given_options['2'] = 'class_list_cw'
+                    out_options.append('3) View Class Info')
+                    given_options['3'] = 'class_info'
+                    session['clsrm_options'] = json.dumps(given_options)
+                    session['clsrm_choice_type'] = 'cw_add_attach'
+                    session['clsrm_class'] = current_class
                 if choice_text == 'cw_turnin':
                     out_status_text = course_work['title'] + ' Submitted!'
 
                     class_info = clsrm.getCourseInfo(current_class)
                     out_content_text = class_info['name'] + '\n' + class_info['descriptionHeading']
+
+                    out_options.append('1) List Announcements')
+                    given_options['1'] = 'class_list_statusan'
+                    out_options.append('2) List Coursework')
+                    given_options['2'] = 'class_list_cw'
+                    out_options.append('3) View Class Info')
+                    given_options['3'] = 'class_info'
+                    session['clsrm_options'] = json.dumps(given_options)
+                    session['clsrm_choice_type'] = 'class_options'
+                    session['clsrm_class'] = current_class
+                if choice_text == 'cw_back':
+                    class_info = clsrm.getCourseInfo(current_class)
+                    out_status_text = class_info['name']
+                    out_content_text = class_info['descriptionHeading']
 
                     out_options.append('1) List Announcements')
                     given_options['1'] = 'class_list_statusan'
