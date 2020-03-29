@@ -108,3 +108,20 @@ if __name__ == '__main__':
     #     "state": "PUBLISHED"
     # }
     # clsrm.createCoursework(courseId, courseWork)
+
+
+
+# courseId = [c for c in clsrm.getCourses() if c['name'] == "LA Hacks 2020"][0]["id"]
+#     courseWorkId = [cw for cw in clsrm.getCourseWork(courseId) if cw['title'] == "Test Assignment 2"][0]["id"]
+#     submissionId = clsrm.getStudentSubmissions(courseId, courseWorkId)[1]["id"]
+#     attachments = [{
+#         "driveFile": {
+#             "id": drive.uploadFromURL("image", url, "image/jpeg")
+#         }
+#     },
+#     {
+#         "driveFile": {
+#             "id": drive.uploadText("essay", "the brown fox jumped over the lazy dog", "text/plain")
+#         }
+#     }]
+#     clsrm.addAttachments(courseId, courseWorkId, submissionId, attachments)
