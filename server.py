@@ -191,15 +191,24 @@ def parser():
                     session['clsrm_sel_type'] = 'cw'
                     session['clsrm_sel_id'] = clsrm_sel_id
                 if choice_text == 'cw_add_attach':
-                    out_options.append('1) List Announcements')
-                    given_options['1'] = 'class_list_statusan'
-                    out_options.append('2) List Coursework')
-                    given_options['2'] = 'class_list_cw'
-                    out_options.append('3) View Class Info')
-                    given_options['3'] = 'class_info'
+                    
+                    
+                    out_status_text = course_work['title']
+                    out_options_explainer = 'Add Attachment Type:'
+                    
+                    out_options.append('1) Add Text')
+                    given_options['1'] = 'attach_text'
+                    out_options.append('2) Dictate Text')
+                    given_options['2'] = 'attach_voice'
+                    out_options.append('3) Add Picture')
+                    given_options['3'] = 'attach_image'
+                    out_options.append('4) Back')
+                    given_options['4'] = 'attach_back'
                     session['clsrm_options'] = json.dumps(given_options)
-                    session['clsrm_choice_type'] = 'cw_add_attach'
+                    session['clsrm_choice_type'] = 'attach_options'
                     session['clsrm_class'] = current_class
+                    session['clsrm_sel_id'] = clsrm_sel_id
+                    
                 if choice_text == 'cw_turnin':
                     out_status_text = course_work['title'] + ' Submitted!'
 
@@ -229,6 +238,44 @@ def parser():
                     session['clsrm_options'] = json.dumps(given_options)
                     session['clsrm_choice_type'] = 'class_options'
                     session['clsrm_class'] = current_class
+
+            if clsrm_choice_type == 'attach_options':
+                choice_text = prev_options[from_text]
+                clsrm_sel_id = session['clsrm_sel_id']
+                course_work = clsrm.getCourseWork(current_class, clsrm_sel_id)
+                class_info = clsrm.getCourseInfo(current_class)
+                submission = clsrm.getStudentSubmissions(current_class, clsrm_sel_id)[0]
+                
+                if choice_text == 'attach_text':
+                    print('attach text')
+                    out_status_text = 'Attach text to ' + course_work['title']
+                    out_content_text = 'The next message you send will be attached to your assignment.\nSend \'CANCEL\' to cancel.'
+                    session['clsrm_choice_type'] = 'ATTACH_TEXT'
+                if choice_text == 'attach_voice':
+                    print('attach voice')
+                if choice_text == 'attach_image':
+                    print('attach image')
+                if choice_text == 'attach_back':
+                    class_info = clsrm.getCourseInfo(current_class)
+                    out_status_text = class_info['name']
+                    out_content_text = class_info['descriptionHeading']
+
+                    out_options.append('1) List Announcements')
+                    given_options['1'] = 'class_list_statusan'
+                    out_options.append('2) List Coursework')
+                    given_options['2'] = 'class_list_cw'
+                    out_options.append('3) View Class Info')
+                    given_options['3'] = 'class_info'
+                    session['clsrm_options'] = json.dumps(given_options)
+                    session['clsrm_choice_type'] = 'class_options'
+                    session['clsrm_class'] = current_class
+                    
+            if clsrm_choice_type == 'ATTACH_TEXT'
+                clsrm_sel_id = session['clsrm_sel_id']
+                course_work = clsrm.getCourseWork(current_class, clsrm_sel_id)
+                class_info = clsrm.getCourseInfo(current_class)
+                submission = clsrm.getStudentSubmissions(current_class, clsrm_sel_id)[0]
+                
 
             session['clsrm_class'] = current_class
 
