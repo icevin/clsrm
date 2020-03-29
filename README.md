@@ -1,4 +1,4 @@
-# clsrm
+# clsrm - LA Hacks 2020
 Google Classroom via SMS
 
 To setup ngrok tunnel & update phone number:
