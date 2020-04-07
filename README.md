@@ -1,5 +1,7 @@
-## clsrm - GClassroom via SMS
-LA Hacks 2020: Best Hack Using Google Cloud & Facebook Best Collaboration Hack
+# clsrm - GClassroom via SMS
+LA Hacks 2020
+  - Google Cloud 1st Place: Best Hack Using Google Cloud
+  - Facebook Best Collaboration Hack
 
 ## Inspiration
 Across the country, COVID-19 is causing school districts to move online. But there are 4 million households with school aged children in the United States *without* home internet [1]. In a class of 25, that averages out to around 2 children. Without funding to buy Chromebooks and mobile hotspots, poorer school districts are forced to choose between cancelling classes completely and leaving their most disadvantaged students even further behind. The inequalities prevalent through our society are being exacerbated. 
