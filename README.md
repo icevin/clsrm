@@ -1,5 +1,5 @@
 # clsrm - GClassroom via SMS
-LA Hacks 2020
+[LA Hacks 2020](https://devpost.com/software/clsrm-google-classroom-via-sms)
   - Google Cloud 1st Place: Best Hack Using Google Cloud
   - Facebook Best Collaboration Hack
 
